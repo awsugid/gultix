@@ -14,8 +14,9 @@ RUN pip install --upgrade pip && \
 # Install pretix plugins from private repositories using BuildKit secrets
 RUN --mount=type=secret,id=github_token \
     TOKEN=$(cat /run/secrets/github_token) && \
-    pip install "git+https://${TOKEN}@github.com/awsugid/pretix-midtrans.git" && \
-    pip install "git+https://github.com/awsugid/gultix-aws-font.git"
+    pip install "git+https://${TOKEN}@github.com/awsugid/pretix-midtrans.git"
+
+RUN pip install "git+https://github.com/awsugid/gultix-aws-font.git"
 
 # Collect static files for all plugins
 RUN pretix collectstatic --no-input
