@@ -43,6 +43,6 @@ ENTRYPOINT ["pretix"]
 FROM nginx:latest AS nginx
 
 # Copy the nginx.conf directly
-COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY config/nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=pretix-build /pretix/src/pretix/static.dist/ /pretix/src/pretix/static.dist/
