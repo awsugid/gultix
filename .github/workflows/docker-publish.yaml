@@ -62,7 +62,7 @@ jobs:
         id: meta-nginx
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/nginx
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/nginx
 
       - name: Build and push nginx image
         uses: docker/build-push-action@v5
