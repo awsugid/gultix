@@ -1,0 +1,63 @@
+name: pretix
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_SCHEMA}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis-data:/data
+
+  task: &pretix-common
+    command: taskworker
+    build:
+      dockerfile: Dockerfile
+      target: pretix-build
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    volumes:
+      - pretix-data:/data
+      - ./generate_schema.py:/generate_schema.py:ro
+      - ./output:/output
+    environment:
+      PRETIX_PRETIX_INSTANCE_NAME: Google Developer Group Bogor
+      PRETIX_PRETIX_URL: http://localhost
+      PRETIX_PRETIX_CURRENCY: IDR
+      PRETIX_LOCALE_DEFAULT: en
+      PRETIX_LOCALE_TIMEZONE: Asia/Jakarta
+      PRETIX_DATABASE_BACKEND: postgresql
+      PRETIX_DATABASE_NAME: ${DB_SCHEMA}
+      PRETIX_DATABASE_USER: ${DB_USER}
+      PRETIX_DATABASE_PASSWORD: ${DB_PASSWORD}
+      PRETIX_DATABASE_HOST: postgres
+      PRETIX_REDIS_LOCATION: redis://redis:6379/1
+      PRETIX_CELERY_BACKEND: redis://redis:6379/2
+      PRETIX_CELERY_BROKER: redis://redis:6379/3
+
+  web:
+    <<: *pretix-common
+    entrypoint: []
+    command: gunicorn pretix.wsgi --name pretix --workers 2 --max-requests 1200 --max-requests-jitter 50 --log-level info --bind 0.0.0.0:80
+
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      target: nginx
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    ports:
+      - 80:80
+    depends_on:
+      - web
+
+volumes:
+  postgres-data:
+  redis-data:
+  pretix-data:
