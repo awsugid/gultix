@@ -20,8 +20,8 @@ services:
     build:
       dockerfile: Dockerfile
       target: pretix-build
-      args:
-        GITHUB_TOKEN: ${GITHUB_TOKEN}
+      secrets:
+        - github_token
     volumes:
       - pretix-data:/data
       - ./generate_schema.py:/generate_schema.py:ro
@@ -50,12 +50,16 @@ services:
     build:
       dockerfile: Dockerfile
       target: nginx
-      args:
-        GITHUB_TOKEN: ${GITHUB_TOKEN}
+      secrets:
+        - github_token
     ports:
       - 80:80
     depends_on:
       - web
+
+secrets:
+  github_token:
+    environment: GITHUB_TOKEN
 
 volumes:
   postgres-data:

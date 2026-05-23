@@ -54,8 +54,8 @@ jobs:
           target: pretix-build
           tags: ${{ steps.meta-pretix.outputs.tags }}
           labels: ${{ steps.meta-pretix.outputs.labels }}
-          build-args: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          secrets: |
+            github_token=${{ secrets.PLUGIN_REPO_TOKEN }}
 
       # --- Nginx image (static files baked in) ---
       - name: Extract metadata for nginx image
@@ -73,5 +73,5 @@ jobs:
           target: nginx
           tags: ${{ steps.meta-nginx.outputs.tags }}
           labels: ${{ steps.meta-nginx.outputs.labels }}
-          build-args: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          secrets: |
+            github_token=${{ secrets.PLUGIN_REPO_TOKEN }}

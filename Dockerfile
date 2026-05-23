@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ## Stage 1: Build pretix with plugins
 FROM pretix/standalone:stable AS pretix-build
 
@@ -10,12 +11,11 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir midtransclient>=1.4.0
 
-# Install pretix-midtrans plugin from private repository
-ARG GITHUB_TOKEN
-RUN pip install "git+https://${GITHUB_TOKEN}@github.com/awsugid/pretix-midtrans.git"
-
-# Install the fontpack plugin from private github repository
-RUN pip install "git+https://${GITHUB_TOKEN}@github.com/awsugid/gultix-aws-font.git"
+# Install pretix plugins from private repositories using BuildKit secrets
+RUN --mount=type=secret,id=github_token \
+    TOKEN=$(cat /run/secrets/github_token) && \
+    pip install "git+https://${TOKEN}@github.com/awsugid/pretix-midtrans.git" && \
+    pip install "git+https://${TOKEN}@github.com/awsugid/gultix-aws-font.git"
 
 # Collect static files for all plugins
 RUN pretix collectstatic --no-input
