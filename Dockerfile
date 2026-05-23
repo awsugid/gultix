@@ -15,7 +15,7 @@ RUN pip install --upgrade pip && \
 RUN --mount=type=secret,id=github_token \
     TOKEN=$(cat /run/secrets/github_token) && \
     pip install "git+https://${TOKEN}@github.com/awsugid/pretix-midtrans.git" && \
-    pip install "git+https://${TOKEN}@github.com/awsugid/gultix-aws-font.git"
+    pip install "git+https://github.com/awsugid/gultix-aws-font.git"
 
 # Collect static files for all plugins
 RUN pretix collectstatic --no-input
