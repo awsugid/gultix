@@ -27,7 +27,7 @@ services:
       - ./generate_schema.py:/generate_schema.py:ro
       - ./output:/output
     environment:
-      PRETIX_PRETIX_INSTANCE_NAME: Google Developer Group Bogor
+      PRETIX_PRETIX_INSTANCE_NAME: AWS User Group Indonesia
       PRETIX_PRETIX_URL: http://localhost
       PRETIX_PRETIX_CURRENCY: IDR
       PRETIX_LOCALE_DEFAULT: en

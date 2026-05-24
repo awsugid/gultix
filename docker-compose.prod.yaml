@@ -17,13 +17,13 @@ services:
 
   task: &pretix-common
     command: taskworker
-    image: ghcr.io/awsugid/gultix:latest
+    image: ghcr.io/awsugid/gultix:v1.0.0
     deploy:
       replicas: 2
     volumes:
       - pretix-data:/data
     environment:
-      PRETIX_PRETIX_INSTANCE_NAME: Google Developer Group Bogor
+      PRETIX_PRETIX_INSTANCE_NAME: AWS User Group Indonesia
       PRETIX_PRETIX_URL: http://localhost
       PRETIX_PRETIX_CURRENCY: IDR
       PRETIX_LOCALE_DEFAULT: en
@@ -45,7 +45,7 @@ services:
       replicas: 2
 
   nginx:
-    image: ghcr.io/awsugid/gultix-nginx:latest
+    image: ghcr.io/awsugid/nginx:v1.0.0
     ports:
       - 80:80
     depends_on:
