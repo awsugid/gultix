@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 ## Stage 1: Build pretix with plugins
 # FROM pretix/standalone:stable AS pretix-build
-FROM ghcr.io/awsugid/pretix-base-image:latest AS pretix-build
+FROM ghcr.io/awsugid/pretix-base-image:latest@sha256:1197017fbe77ad6281115bde6c47fe152c1c1a3e5fcdd667eb8f4d21a8cdf655 AS pretix-build
 
 USER root
 
