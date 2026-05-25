@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 ## Stage 1: Build pretix with plugins
-FROM pretix/standalone:stable AS pretix-build
+# FROM pretix/standalone:stable AS pretix-build
+FROM ghcr.io/awsugid/pretix-base-image:latest AS pretix-build
 
 USER root
 
@@ -40,7 +41,7 @@ ENTRYPOINT ["pretix"]
 # CMD ["all"]
 
 ## Stage 2: Nginx with static files baked in from the pretix build
-FROM nginx:latest AS nginx
+FROM nginx:1.31.1-trixie AS nginx
 
 # Copy the nginx.conf directly
 COPY config/nginx.conf /etc/nginx/nginx.conf
