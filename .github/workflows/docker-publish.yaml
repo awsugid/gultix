@@ -50,8 +50,8 @@ jobs:
         with:
           context: .
           push: true
-          #platforms: linux/amd64,linux/arm64
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
+          # platforms: linux/arm64
           target: pretix-build
           tags: ${{ steps.meta-pretix.outputs.tags }}
           labels: ${{ steps.meta-pretix.outputs.labels }}
