@@ -70,8 +70,8 @@ jobs:
         with:
           context: .
           push: true
-          #platforms: linux/amd64,linux/arm64
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
+          #platforms: linux/arm64
           target: nginx
           tags: ${{ steps.meta-nginx.outputs.tags }}
           labels: ${{ steps.meta-nginx.outputs.labels }}
