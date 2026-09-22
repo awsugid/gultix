@@ -13,13 +13,9 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir midtransclient>=1.4.0
 
 # Install pretix plugins from private repositories using BuildKit secrets
-# Token goes into a transient ~/.netrc (git honors it for HTTPS auth), never into
-# the URL: keeps the remote URL / pip direct_url clean and layer-cache stable.
-RUN --mount=type=secret,id=github_token,required=true \
-    printf 'machine github.com\nlogin %s\npassword x-oauth-basic\n' "$(cat /run/secrets/github_token)" > /root/.netrc && \
-    chmod 600 /root/.netrc && \
-    pip install "git+https://github.com/awsugid/pretix-midtrans.git@v1.0.2" && \
-    rm -f /root/.netrc
+RUN --mount=type=secret,id=github_token \
+    TOKEN=$(cat /run/secrets/github_token) && \
+    pip install "git+https://${TOKEN}@github.com/awsugid/pretix-midtrans.git@v1.0.2"
 
 RUN pip install "git+https://github.com/awsugid/gultix-aws-font.git"
 
