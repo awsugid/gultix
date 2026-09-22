@@ -13,11 +13,20 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir midtransclient>=1.4.0
 
 # Install pretix plugins from private repositories using BuildKit secrets
-RUN --mount=type=secret,id=github_token \
-    TOKEN=$(cat /run/secrets/github_token) && \
-    pip install "git+https://${TOKEN}@github.com/awsugid/pretix-midtrans.git@v1.0.2"
+# Token goes into a transient ~/.netrc (git honors it for HTTPS auth), never into
+# the URL: keeps the remote URL / pip direct_url clean and layer-cache stable.
+RUN --mount=type=secret,id=github_token,required=true \
+    printf 'machine github.com\nlogin %s\npassword x-oauth-basic\n' "$(cat /run/secrets/github_token)" > /root/.netrc && \
+    chmod 600 /root/.netrc && \
+    pip install "git+https://github.com/awsugid/pretix-midtrans.git@v1.0.2" && \
+    rm -f /root/.netrc
 
 RUN pip install "git+https://github.com/awsugid/gultix-aws-font.git"
+
+# Pinned by parent-supplied commit SHA (default: main). Changing the ARG only
+# invalidates this RUN onward; URL stays token-free so cache keys are stable.
+ARG PRETIX_EMAIL_SIGNATURE_REF=main
+RUN pip install "git+https://github.com/awsugid/pretix-email-signature.git@${PRETIX_EMAIL_SIGNATURE_REF}"
 
 # Collect static files for all plugins
 RUN pretix collectstatic --no-input
