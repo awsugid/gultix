@@ -19,9 +19,9 @@ RUN --mount=type=secret,id=github_token \
 
 RUN pip install "git+https://github.com/awsugid/gultix-aws-font.git"
 
-# Pinned by parent-supplied commit SHA (default: main). Changing the ARG only
-# invalidates this RUN onward; URL stays token-free so cache keys are stable.
-ARG PRETIX_EMAIL_SIGNATURE_REF=main
+# Default to the released sponsor plugin; allow an explicit revision override.
+# Changing the ARG invalidates this RUN and subsequent layers.
+ARG PRETIX_EMAIL_SIGNATURE_REF=v1.2.0
 RUN pip install "git+https://github.com/awsugid/pretix-email-signature.git@${PRETIX_EMAIL_SIGNATURE_REF}"
 
 # Collect static files for all plugins
